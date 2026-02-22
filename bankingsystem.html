@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dennis Banking System</title>
+    <link rel="favicon" href="bankicon.ico">
+    <style>
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary-color: #64748b;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --background: #f8fafc;
+    --card-background: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --radius: 12px;
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--background);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: var(--text-primary);
+}
+
+.container {
+    width: 100%;
+    max-width: 480px;
+}
+
+.screen {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#welcome-screen {
+    background: var(--card-background);
+    padding: 48px 32px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.logo {
+    margin-bottom: 24px;
+}
+
+.bank-icon {
+    font-size: 64px;
+    display: inline-block;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+#welcome-screen h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    margin-bottom: 32px;
+    font-size: 14px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+}
+
+.input-group input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 16px;
+    transition: var(--transition);
+    outline: none;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-group input::placeholder {
+    color: var(--text-secondary);
+}
+
+.btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.btn-secondary {
+    background: var(--background);
+    color: var(--text-secondary);
+    border: 2px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--border-color);
+}
+
+#banking-screen {
+    background: var(--card-background);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: white;
+}
+
+.account-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.account-label {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.account-value {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+#logout-btn {
+    width: auto;
+    padding: 8px 16px;
+    font-size: 14px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+}
+
+#logout-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.balance-card {
+    padding: 32px 24px;
+    text-align: center;
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.balance-label {
+    display: block;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.balance-amount {
+    font-size: 42px;
+    font-weight: 800;
+    color: var(--primary-color);
+    transition: var(--transition);
+}
+
+.balance-amount.updated {
+    animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.transaction-section {
+    padding: 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.transaction-section h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-background);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.action-btn:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.action-btn.withdraw:hover {
+    border-color: var(--danger-color);
+    background: #fef2f2;
+}
+
+.action-btn.deposit:hover {
+    border-color: var(--success-color);
+    background: #f0fdf4;
+}
+
+.action-btn.balance:hover {
+    border-color: var(--warning-color);
+    background: #fffbeb;
+}
+
+.action-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.action-btn span:last-child {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.transaction-history {
+    padding: 24px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.transaction-history h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.transaction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.no-transactions {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 20px;
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--background);
+    border-radius: 8px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.transaction-item.deposit {
+    border-left: 4px solid var(--success-color);
+}
+
+.transaction-item.withdraw {
+    border-left: 4px solid var(--danger-color);
+}
+
+.transaction-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.transaction-type {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.transaction-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.transaction-amount {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.transaction-amount.deposit {
+    color: var(--success-color);
+}
+
+.transaction-amount.withdraw {
+    color: var(--danger-color);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--card-background);
+    border-radius: var(--radius);
+    width: 90%;
+    max-width: 400px;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 24px;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 0 24px 24px;
+}
+
+.modal-footer .btn {
+    flex: 1;
+}
+
+.message {
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: none;
+}
+
+.message.success {
+    display: block;
+    background: #f0fdf4;
+    color: var(--success-color);
+    border: 1px solid #bbf7d0;
+}
+
+.message.error {
+    display: block;
+    background: #fef2f2;
+    color: var(--danger-color);
+    border: 1px solid #fecaca;
+}
+
+.toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--text-primary);
+    color: white;
+    padding: 16px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast.success {
+    background: var(--success-color);
+}
+
+.toast.error {
+    background: var(--danger-color);
+}
+
+@media (max-width: 480px) {
+    .container {
+        max-width: 100%;
+    }
+    
+    #welcome-screen {
+        padding: 32px 24px;
+    }
+    
+    .balance-amount {
+        font-size: 36px;
+    }
+    
+    .action-buttons {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .action-btn {
+        padding: 16px 8px;
+    }
+    
+    .action-icon {
+        font-size: 24px;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="welcome-screen" class="screen active">
+            <div class="logo">
+                <span class="bank-icon">🏦</span>
+            </div>
+            <h1>Dennis Banking System</h1>
+            <p class="subtitle">Welcome to your personal banking portal</p>
+            
+            <div class="input-group">
+                <label for="account-number">Account Number</label>
+                <input type="number" id="account-number" placeholder="Enter your account number" min="1">
+            </div>
+            
+            <button id="login-btn" class="btn btn-primary">Access Account</button>
+        </div>
+
+        <div id="banking-screen" class="screen">
+            <div class="header">
+                <div class="account-info">
+                    <span class="account-label">Account #</span>
+                    <span id="display-account" class="account-value">000000</span>
+                </div>
+                <button id="logout-btn" class="btn btn-secondary">Logout</button>
+            </div>
+
+            <div class="balance-card">
+                <span class="balance-label">Current Balance</span>
+                <span id="display-balance" class="balance-amount">₱0.00</span>
+            </div>
+
+            <div class="transaction-section">
+                <h2>Quick Actions</h2>
+                <div class="action-buttons">
+                    <button class="action-btn withdraw" data-action="withdraw">
+                        <span class="action-icon">💸</span>
+                        <span>Withdraw</span>
+                    </button>
+                    <button class="action-btn deposit" data-action="deposit">
+                        <span class="action-icon">💳</span>
+                        <span>Deposit</span>
+                    </button>
+                    <button class="action-btn balance" data-action="balance">
+                        <span class="action-icon">👁️</span>
+                        <span>Check Balance</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="transaction-history">
+                <h2>Recent Transactions</h2>
+                <div id="transaction-list" class="transaction-list">
+                    <p class="no-transactions">No transactions yet</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="transaction-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modal-title">Transaction</h3>
+                    <button class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label id="amount-label" for="transaction-amount">Amount</label>
+                        <input type="number" id="transaction-amount" placeholder="Enter amount" min="0.01" step="0.01">
+                    </div>
+                    <p id="modal-message" class="message"></p>
+                </div>
+                <div class="modal-footer">
+                    <button id="cancel-btn" class="btn btn-secondary">Cancel</button>
+                    <button id="confirm-btn" class="btn btn-primary">Confirm</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast" class="toast"></div>
+    </div>
+
+   <script>
+class BankAccount {
+    constructor() {
+        this.accountNumber = "";
+        this.balance = 0;
+        this.transactions = [];
+    }
+
+    deposit(amount) {
+        this.balance += amount;
+        this.addTransaction("deposit", amount);
+    }
+
+    withdraw(amount) {
+        if (amount > this.balance) {
+            return false;
+        }
+        this.balance -= amount;
+        this.addTransaction("withdraw", amount);
+        return true;
+    }
+
+    addTransaction(type, amount) {
+        this.transactions.unshift({
+            type,
+            amount,
+            time: new Date().toLocaleString()
+        });
+    }
+}
+
+class BankingSystem {
+    constructor() {
+        this.account = new BankAccount();
+        this.currentAction = null;
+
+        this.initializeElements();
+        this.bindEvents();
+    }
+
+    initializeElements() {
+        this.welcomeScreen = document.getElementById("welcome-screen");
+        this.bankingScreen = document.getElementById("banking-screen");
+
+        this.accountInput = document.getElementById("account-number");
+        this.loginBtn = document.getElementById("login-btn");
+        this.logoutBtn = document.getElementById("logout-btn");
+
+        this.displayAccount = document.getElementById("display-account");
+        this.displayBalance = document.getElementById("display-balance");
+
+        this.actionButtons = document.querySelectorAll(".action-btn");
+
+        this.modal = document.getElementById("transaction-modal");
+        this.modalTitle = document.getElementById("modal-title");
+        this.amountInput = document.getElementById("transaction-amount");
+        this.confirmBtn = document.getElementById("confirm-btn");
+        this.cancelBtn = document.getElementById("cancel-btn");
+        this.closeBtn = document.querySelector(".close-btn");
+        this.modalMessage = document.getElementById("modal-message");
+
+        this.transactionList = document.getElementById("transaction-list");
+        this.toast = document.getElementById("toast");
+    }
+
+    bindEvents() {
+        this.loginBtn.addEventListener("click", () => this.login());
+        this.logoutBtn.addEventListener("click", () => this.logout());
+
+        this.actionButtons.forEach(btn => {
+            btn.addEventListener("click", () => this.openModal(btn.dataset.action));
+        });
+
+        this.confirmBtn.addEventListener("click", () => this.confirmTransaction());
+        this.cancelBtn.addEventListener("click", () => this.closeModal());
+        this.closeBtn.addEventListener("click", () => this.closeModal());
+    }
+
+    login() {
+        const number = this.accountInput.value.trim();
+        if (!number) {
+            this.showToast("Enter account number", "error");
+            return;
+        }
+
+        this.account.accountNumber = number;
+        this.displayAccount.textContent = number;
+
+        this.welcomeScreen.classList.remove("active");
+        this.bankingScreen.classList.add("active");
+
+        this.updateBalance();
+        this.showToast("Login successful", "success");
+    }
+
+    logout() {
+        this.welcomeScreen.classList.add("active");
+        this.bankingScreen.classList.remove("active");
+        this.accountInput.value = "";
+    }
+
+    openModal(action) {
+        if (action === "balance") {
+            this.showToast(`Current Balance: $${this.account.balance.toFixed(2)}`, "success");
+            return;
+        }
+
+        this.currentAction = action;
+        this.modalTitle.textContent =
+            action === "deposit" ? "Deposit Money" : "Withdraw Money";
+
+        this.amountInput.value = "";
+        this.modalMessage.className = "message";
+        this.modalMessage.textContent = "";
+
+        this.modal.classList.add("active");
+    }
+
+    closeModal() {
+        this.modal.classList.remove("active");
+    }
+
+    confirmTransaction() {
+        const amount = parseFloat(this.amountInput.value);
+
+        if (!amount || amount <= 0) {
+            this.showModalMessage("Enter valid amount", "error");
+            return;
+        }
+
+        if (this.currentAction === "deposit") {
+            this.account.deposit(amount);
+            this.showToast("Deposit successful", "success");
+        }
+
+        if (this.currentAction === "withdraw") {
+            const success = this.account.withdraw(amount);
+            if (!success) {
+                this.showModalMessage("Insufficient balance", "error");
+                return;
+            }
+            this.showToast("Withdrawal successful", "success");
+        }
+
+        this.updateBalance();
+        this.renderTransactions();
+        this.closeModal();
+    }
+
+    updateBalance() {
+        this.displayBalance.textContent = "$" + this.account.balance.toFixed(2);
+        this.displayBalance.classList.add("updated");
+        setTimeout(() => {
+            this.displayBalance.classList.remove("updated");
+        }, 500);
+    }
+
+    renderTransactions() {
+        if (this.account.transactions.length === 0) {
+            this.transactionList.innerHTML =
+                '<p class="no-transactions">No transactions yet</p>';
+            return;
+        }
+
+        this.transactionList.innerHTML = "";
+
+        this.account.transactions.forEach(tx => {
+            const item = document.createElement("div");
+            item.className = `transaction-item ${tx.type}`;
+
+            item.innerHTML = `
+                <div class="transaction-info">
+                    <span class="transaction-type">${tx.type.toUpperCase()}</span>
+                    <span class="transaction-time">${tx.time}</span>
+                </div>
+                <span class="transaction-amount ${tx.type}">
+                    ${tx.type === "deposit" ? "+" : "-"}$${tx.amount.toFixed(2)}
+                </span>
+            `;
+
+            this.transactionList.appendChild(item);
+        });
+    }
+
+    showModalMessage(message, type) {
+        this.modalMessage.textContent = message;
+        this.modalMessage.className = `message ${type}`;
+    }
+
+    showToast(message, type) {
+        this.toast.textContent = message;
+        this.toast.className = `toast show ${type}`;
+
+        setTimeout(() => {
+            this.toast.className = "toast";
+        }, 2500);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    new BankingSystem();
+});
+</script>
+</body>
+</html>
